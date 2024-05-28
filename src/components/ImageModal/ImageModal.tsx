@@ -1,7 +1,18 @@
-import PropTypes from "prop-types";
+import React from "react";
 import Modal from "react-modal";
 
-const customStyles = {
+interface Image {
+  regular: string;
+  alt: string;
+}
+
+interface ImageModalProps {
+  images: Image;
+  isOpen: boolean;
+  onRequestClose: () => void;
+}
+
+const customStyles: Modal.Styles = {
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
@@ -19,7 +30,11 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-const ImageModal = ({ images, isOpen, onRequestClose }) => {
+const ImageModal: React.FC<ImageModalProps> = ({
+  images,
+  isOpen,
+  onRequestClose,
+}) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -30,12 +45,6 @@ const ImageModal = ({ images, isOpen, onRequestClose }) => {
       <img src={images.regular} alt={images.alt} />
     </Modal>
   );
-};
-
-ImageModal.propTypes = {
-  images: PropTypes.object.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onRequestClose: PropTypes.func.isRequired,
 };
 
 export default ImageModal;
