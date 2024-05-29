@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ErrorMessage from "../ErrorMessage/ErrorMessage.tsx";
-import ImageGallery from "../ImageGallery/ImageGallery.tsx";
-import ImageModal from "../ImageModal/ImageModal.tsx";
-import Loader from "../Loader/Loader.tsx";
-import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn.tsx";
-import SearchBar from "../SearchBar/SearchBar.tsx";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import ImageModal from "../ImageModal/ImageModal";
+import Loader from "../Loader/Loader";
+import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import SearchBar from "../SearchBar/SearchBar";
 
-interface Image {
+interface GalleryImage {
   id: string;
   alt: string;
   small: string;
@@ -15,14 +15,14 @@ interface Image {
 }
 
 const App: React.FC = () => {
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [hasMoreImages, setHasMoreImages] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
   async function fetchImages(query: string, pageNum: number) {
     try {
@@ -87,7 +87,7 @@ const App: React.FC = () => {
     setPage(page + 1);
   };
 
-  const handleImageClick = (image: Image) => {
+  const handleImageClick = (image: GalleryImage) => {
     setSelectedImage(image);
     setIsModalOpen(true);
   };
