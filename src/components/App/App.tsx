@@ -6,45 +6,39 @@ import ImageModal from "../ImageModal/ImageModal";
 import Loader from "../Loader/Loader";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import SearchBar from "../SearchBar/SearchBar";
+import { Image, UnsplashImage } from "./App.type";
 
-interface GalleryImage {
-  id: string;
-  alt: string;
-  small: string;
-  regular: string;
-}
-
-const App: React.FC = () => {
-  const [images, setImages] = useState<GalleryImage[]>([]);
+const App: FC = () => {
+  const [images, setImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [hasMoreImages, setHasMoreImages] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
-  async function fetchImages(query: string, pageNum: number) {
+  async function fetchImages(query: string, pageNum: number): Promise<void> {
     try {
       setLoading(true);
-      const apiKey = "wmfnsVc_DdNJUYvLvziU9AjLz2nPehfwjBFjdxGMITc";
-      const params = {
+      const apiKey: string = "wmfnsVc_DdNJUYvLvziU9AjLz2nPehfwjBFjdxGMITc";
+      const params: UnsplashImage = {
         client_id: apiKey,
         query: query,
         orientation: "landscape",
         page: pageNum,
         per_page: 12,
       };
-      const response = await axios.get(
-        `https://api.unsplash.com/search/photos/`,
-        {
-          params: params,
-          headers: {
-            Authorization: `Client-ID ${apiKey}`,
-          },
-        }
-      );
-      const normalizeData = response.data.results.map(
+      const response: AxiosResponse<any> = await axios.get<
+        UnsplashImage,
+        AxiosResponse<any>
+      >(`https://api.unsplash.com/search/photos/`, {
+        params: params,
+        headers: {
+          Authorization: `Client-ID ${apiKey}`,
+        },
+      });
+      const normalizeData: Image[] = response.data.results.map(
         ({ alt_description, id, urls }: any) => ({
           alt: alt_description,
           id,
@@ -73,26 +67,30 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (query !== "") {
+      fetchImages(query, 1);
+      setPage(1);
+      setImages([]);
+      setHasMoreImages(true);
+    }
+    if (page > 1) {
       fetchImages(query, page);
     }
   }, [query, page]);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = (query: string): void => {
     setQuery(query);
-    setPage(1);
-    setImages([]);
   };
 
-  const loadMore = () => {
+  const loadMore = (): void => {
     setPage(page + 1);
   };
 
-  const handleImageClick = (image: GalleryImage) => {
+  const handleImageClick = (image: Image): void => {
     setSelectedImage(image);
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setSelectedImage(null);
     setIsModalOpen(false);
   };
