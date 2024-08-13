@@ -21,7 +21,7 @@ const App: FC = () => {
   async function fetchImages(query: string, pageNum: number): Promise<void> {
     try {
       setLoading(true);
-      const apiKey: string = "wmfnsVc_DdNJUYvLvziU9AjLz2nPehfwjBFjdxGMITc";
+      const apiKey = "wmfnsVc_DdNJUYvLvziU9AjLz2nPehfwjBFjdxGMITc";
       const params: UnsplashImage = {
         client_id: apiKey,
         query: query,
@@ -29,17 +29,20 @@ const App: FC = () => {
         page: pageNum,
         per_page: 12,
       };
-      const response: AxiosResponse<any> = await axios.get<
-        UnsplashImage,
-        AxiosResponse<any>
-      >(`https://api.unsplash.com/search/photos/`, {
-        params: params,
-        headers: {
-          Authorization: `Client-ID ${apiKey}`,
-        },
-      });
+
+      const response: AxiosResponse<UnsplashResponse> =
+        await axios.get<UnsplashResponse>(
+          `https://api.unsplash.com/search/photos/`,
+          {
+            params: params,
+            headers: {
+              Authorization: `Client-ID ${apiKey}`,
+            },
+          }
+        );
+
       const normalizeData: Image[] = response.data.results.map(
-        ({ alt_description, id, urls }: any) => ({
+        ({ alt_description, id, urls }) => ({
           alt: alt_description,
           id,
           small: urls.small,
