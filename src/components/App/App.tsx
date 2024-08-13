@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, FC } from "react";
+import axios, { AxiosResponse } from "axios";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import ImageModal from "../ImageModal/ImageModal";
@@ -7,6 +7,17 @@ import Loader from "../Loader/Loader";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import SearchBar from "../SearchBar/SearchBar";
 import { Image, UnsplashImage } from "./App.type";
+
+interface UnsplashResponse {
+  results: Array<{
+    id: string;
+    alt_description: string | null;
+    urls: {
+      small: string;
+      regular: string;
+    };
+  }>;
+}
 
 const App: FC = () => {
   const [images, setImages] = useState<Image[]>([]);
@@ -43,7 +54,7 @@ const App: FC = () => {
 
       const normalizeData: Image[] = response.data.results.map(
         ({ alt_description, id, urls }) => ({
-          alt: alt_description,
+          alt: alt_description || "",
           id,
           small: urls.small,
           regular: urls.regular,
